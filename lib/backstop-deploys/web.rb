@@ -9,6 +9,10 @@ module Backstop
         RestClient.post("https://#{CGI.escape(Config.librato_email)}:#{Config.librato_key}@metrics-api.librato.com/v1/annotations/deploys", 'title' => title)
         { :id => id }.to_json
       end
+
+      put '/deploys/:id' do |id|
+        { :message => 'ok' }.to_json
+      end
     end
   end
 end
