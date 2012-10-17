@@ -9,20 +9,21 @@ describe Backstop::Deploys::Web do
   end
 
   describe 'POST /deploys' do
-    context 'with proper params' do
-      let(:librato_email) { "foo@foo.com" }
-      let(:librato_key) { '12345' }
-      let(:random_key) { 'abcd' }
-      let(:params) { {:app => 'foo', :version => 'v75'} }
-      let(:mock_request) { stub_request(:post, "https://#{CGI.escape(librato_email)}:#{librato_key}@metrics-api.librato.com/v1/annotations/deploys").with(:body => {'title' => "#{params[:app]}.#{params[:version]}.#{random_key}"}) }
+    let(:librato_email) { "foo@foo.com" }
+    let(:librato_key) { '12345' }
+    let(:random_key) { 'abcd' }
+    let(:params) { {:app => 'foo', :version => 'v75'} }
+    let(:mock_request) { stub_request(:post, "https://#{CGI.escape(librato_email)}:#{librato_key}@metrics-api.librato.com/v1/annotations/deploys").with(:body => {'title' => "#{params[:app]}.#{params[:version]}.#{random_key}"}) }
 
-      before(:each) do
-        SecureRandom.stub(:hex) { random_key }
-        Backstop::Deploys::Config.stub(:librato_email) { librato_email }
-        Backstop::Deploys::Config.stub(:librato_key) { librato_key }
-        mock_request 
-        post '/deploys', params
-      end
+    before(:each) do
+      SecureRandom.stub(:hex) { random_key }
+      Backstop::Deploys::Config.stub(:librato_email) { librato_email }
+      Backstop::Deploys::Config.stub(:librato_key) { librato_key }
+      mock_request 
+    end
+
+    context 'with proper params' do
+      before(:each) { post '/deploys', params }
 
       it('should return a 200') { last_response.status.should eq(200) }
 
@@ -34,7 +35,14 @@ describe Backstop::Deploys::Web do
      end
 
     context 'missing app' do
-      it 'should return a 400'
+      before(:each) do
+        
+      end
+
+      it 'should return a 400' do
+        
+      end
+
       it 'should state the error'
     end
 
