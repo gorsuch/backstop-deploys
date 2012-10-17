@@ -24,31 +24,23 @@ describe Backstop::Deploys::Web do
 
     context 'with proper params' do
       before(:each) { post '/deploys', params }
-
       it('should return a 200') { last_response.status.should eq(200) }
-
       it('should return an id') { JSON.parse(last_response.body).has_key?('id') }
-
       it('should call the Librato API properly') do
         mock_request.should have_been_made.once
       end
      end
 
     context 'missing app' do
-      before(:each) do
-        
-      end
-
-      it 'should return a 400' do
-        
-      end
-
-      it 'should state the error'
+      before(:each) { post '/deploys', { :version => 'v75' } }
+      it('should return a 400') { last_response.status.should eq(400) }
+      it('should state the error') { JSON.parse(last_response.body).has_key?('message') }
     end
 
     context 'missing version' do
-      it 'should return a 400'
-      it 'should state the error'
+      before(:each) { post '/deploys', { :app => 'foo' } }
+      it('should return a 400') { last_response.status.should eq(400) }
+      it('should state the error') { JSON.parse(last_response.body).has_key?('message') }
     end
   end
 
