@@ -10,52 +10,40 @@ describe Backstop::Deploys::Web do
 
   let(:librato_email) { "foo@foo.com" }
   let(:librato_key) { '12345' }
-  let(:random_key) { 'abcd' }
-  let(:params) { {:app => 'foo', :version => 'v75'} }
+  let(:app) { 'foo' }
+  let(:version) { 'v75' }
+  let(:t) { Time.now }
+  let(:id) { "#{app}.#{version}.#{t.to_i}" }
+  let(:params) { {:source => 'test'} }
 
   before(:each) do
     Backstop::Deploys::Config.stub(:librato_email) { librato_email }
     Backstop::Deploys::Config.stub(:librato_key) { librato_key }
   end
 
-  describe 'POST /deploys' do
-    let(:mock_request) { stub_request(:post, "https://#{CGI.escape(librato_email)}:#{librato_key}@metrics-api.librato.com/v1/annotations/deploys").with(:body => {'title' => "#{params[:app]}.#{params[:version]}.#{random_key}"}) }
-
-    before(:each) do
-      SecureRandom.stub(:hex) { random_key }
-      mock_request 
-    end
-
-    context 'with proper params' do
-      before(:each) { post '/deploys', params }
-      it('should return a 200') { last_response.status.should eq(200) }
-      it('should return an id') { JSON.parse(last_response.body).has_key?('id') }
-      it('should call the Librato API properly') do
-        mock_request.should have_been_made.once
-      end
-     end
-
-    context 'missing app' do
-      before(:each) { post '/deploys', { :version => 'v75' } }
-      it('should return a 400') { last_response.status.should eq(400) }
-      it('should state the error') { JSON.parse(last_response.body).has_key?('message') }
-    end
-
-    context 'missing version' do
-      before(:each) { post '/deploys', { :app => 'foo' } }
-      it('should return a 400') { last_response.status.should eq(400) }
-      it('should state the error') { JSON.parse(last_response.body).has_key?('message') }
-    end
-  end
-
   describe 'PUT /deploys/:id' do
-    before(:each) do
-      put '/deploys/abcd', params
+    context 'with proper id' do
+      context 'with source' do
+        it 'should ask Librato for the proper annotation'
+
+        context 'non-existent annotation' do
+          it 'should create a new annotation'
+        end
+
+        context 'existing annotation' do
+          it 'should update the existing annotation'
+        end
+      end
+
+      context 'without source' do
+        it 'should return a 400'
+        it 'should return a proper error message'
+      end
     end
 
-    it('should return a 200') { last_response.status.should eq(200) }
-    it('returns an ok message') { JSON.parse(last_response.body).has_key?('message') }
-    it('should ask the Librato API for latest deploys')
-    it('should should update the proper annotation')
+    context 'with improperly formatted id' do
+      it 'should return a 400'
+      it 'should return a proper error message'
+    end
   end
 end
