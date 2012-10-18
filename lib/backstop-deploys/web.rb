@@ -34,9 +34,9 @@ module Backstop
           stream_exists = false
         end
 
-        if stream_exists and events = data['events'].first
+        if stream_exists and events = data['events'][source]
           # events already exists, we just need to update
-          event = events[source].first
+          event = events.first
           event_id = event['id']
           payload = { :title => "#{app}.#{version}" }
           payload[:end_time] = params[:end_time] if params[:end_time]

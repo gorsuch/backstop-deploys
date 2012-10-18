@@ -31,7 +31,7 @@ describe Backstop::Deploys::Web do
         context 'existing annotation' do
           let(:event_id) { 12345 }
           let(:stub_events) { [{:title => title, :source => source, :start_time => t.to_i, :id => event_id}] }
-          let(:stub_get_existing_body) { {:name => 'deploys', :events => [{source => stub_events}]} } 
+          let(:stub_get_existing_body) { {:name => 'deploys', :events => {source => stub_events}} } 
           let(:stub_get_existing_request) { stub_request(:get, "#{api_endpoint}/annotations/deploys").with(:query => { :sources => [source], :start_time => t.to_i }).to_return(:body => stub_get_existing_body.to_json)}
           let(:stub_update_request) { stub_request(:put, "#{api_endpoint}/annotations/deploys/#{event_id}").with(:body => {:title => title}) }
           before(:each) do
@@ -58,7 +58,7 @@ describe Backstop::Deploys::Web do
         end
 
         context 'non-existent annotation' do
-          let(:stub_get_missing_body) { {:name => 'deploys', :events => []} } 
+          let(:stub_get_missing_body) { {:name => 'deploys', :events => {}} } 
           let(:stub_get_missing_request) { stub_request(:get, "#{api_endpoint}/annotations/deploys").with(:query => { :sources => [source], :start_time => t.to_i }).to_return(:body => stub_get_missing_body.to_json)}
           let(:stub_new_request) { stub_request(:post, "#{api_endpoint}/annotations/deploys").with(:body => "source=#{source}&start_time=#{t.to_i}&title=#{title}") }
           before(:each) do
