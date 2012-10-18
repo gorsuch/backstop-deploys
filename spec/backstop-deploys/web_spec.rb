@@ -44,10 +44,23 @@ describe Backstop::Deploys::Web do
           it('should return a 200') { last_response.status.should eq(200) }
         end
 
+        context 'non-existent annotation stream' do
+          let(:stub_missing_stream) { stub_request(:get, "#{api_endpoint}/annotations/deploys").with(:query => { :sources => [source], :start_time => t.to_i }).to_return(:status => 404) }
+          let(:stub_new_request) { stub_request(:post, "#{api_endpoint}/annotations/deploys").with(:body => "title=#{title}&start_time=#{t.to_i}") }
+          before(:each) do
+            stub_missing_stream
+            stub_new_request
+            put "/deploys/#{id}", params
+          end
+          it('should ask Librato for the proper annotation') { stub_missing_stream.should have_been_made.once }
+          it('should create a new annotation') { stub_new_request.should have_been_made.once }
+          it('should be 200') { last_response.status.should eq(200) }
+        end
+
         context 'non-existent annotation' do
           let(:stub_get_missing_body) { {:name => 'deploys', :events => []} } 
           let(:stub_get_missing_request) { stub_request(:get, "#{api_endpoint}/annotations/deploys").with(:query => { :sources => [source], :start_time => t.to_i }).to_return(:body => stub_get_missing_body.to_json)}
-          let(:stub_new_request) { stub_request(:put, "#{api_endpoint}/annotations/deploys").with(:body => "title=#{title}&start_time=#{t.to_i}") }
+          let(:stub_new_request) { stub_request(:post, "#{api_endpoint}/annotations/deploys").with(:body => "title=#{title}&start_time=#{t.to_i}") }
           before(:each) do
             stub_get_missing_request
             stub_new_request

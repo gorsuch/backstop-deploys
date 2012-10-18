@@ -24,10 +24,17 @@ module Backstop
         halt [400, {:message => ':id should be in the format of app.version.epoch'}.to_json] if app.nil? or version.nil? or start_time.nil?
         end_time = params[:end_time]
         halt [400, {:message => ':source is a required param'}.to_json] unless source = params[:source]
-        json = RestClient.get "#{api_endpoint}/annotations/deploys", :params => {'sources[0]' => source, :start_time => start_time}
-        data = JSON.parse(json)
+        stream_exists = true
+        data = nil
 
-        if events = data['events'].first
+        begin
+          json = RestClient.get "#{api_endpoint}/annotations/deploys", :params => {'sources[0]' => source, :start_time => start_time}
+          data = JSON.parse(json)
+        rescue RestClient::ResourceNotFound
+          stream_exists = false
+        end
+
+        if stream_exists and events = data['events'].first
           # events already exists, we just need to update
           event = events[source].first
           event_id = event['id']
@@ -38,7 +45,7 @@ module Backstop
           # new event needs to be created
           payload = { :start_time => start_time, :title => "#{app}.#{version}" }
           payload[:end_time] = end_time if end_time
-          RestClient.put "#{api_endpoint}/annotations/deploys", "title=#{app}.#{version}&start_time=#{start_time}"
+          RestClient.post "#{api_endpoint}/annotations/deploys", "title=#{app}.#{version}&start_time=#{start_time}"
         end
       end
     end
