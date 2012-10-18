@@ -22,6 +22,12 @@ Run `Backstop::Deploys::Web` in your rack application.
 
 Assumes the pressence of `LIBRATO_EMAIL` and `LIBRATO_KEY` in `ENV`.
 
+Example curl interaction:
+
+```bash
+$ curl -X PUT localhost:5000/deploys/a.c.1350581323 -d 'source=test&end_time=1350581423'
+```
+
 ## Contributing
 
 1. Fork it
