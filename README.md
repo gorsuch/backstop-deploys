@@ -1,6 +1,6 @@
 # Backstop::Deploys
 
-TODO: Write a gem description
+An extension to backstop to allow submission to Librato Metrics
 
 ## Installation
 
@@ -18,7 +18,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Run `Backstop::Deploys::Web` in your rack application.
+
+Assumes the pressence of `LIBRATO_EMAIL` and `LIBRATO_KEY` in `ENV`.
 
 ## Contributing
 
