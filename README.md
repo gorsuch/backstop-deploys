@@ -28,6 +28,8 @@ Example curl interaction:
 $ curl -X PUT localhost:5000/deploys/a.c.1350581323 -d 'source=test&end_time=1350581423'
 ```
 
+The resource id is broken down into `component.version.epoch_time`.  `source` is required in the body, `end_time` is optional.
+
 ## Contributing
 
 1. Fork it
