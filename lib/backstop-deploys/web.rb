@@ -38,12 +38,12 @@ module Backstop
           # events already exists, we just need to update
           event = events.first
           event_id = event['id']
-          payload = { :title => "#{app}.#{version}" }
+          payload = { :title => "#{source}.#{app}.#{version}" }
           payload[:end_time] = params[:end_time] if params[:end_time]
           RestClient.put "#{api_endpoint}/annotations/deploys/#{event_id}", payload
         else
           # new event needs to be created
-          payload = { :start_time => start_time, :title => "#{app}.#{version}", :source => source }
+          payload = { :start_time => start_time, :title => "#{source}.#{app}.#{version}", :source => source }
           payload[:end_time] = end_time if end_time
           q = payload.map { |k,v| "#{k}=#{v}" }.sort.join("&")
           RestClient.post "#{api_endpoint}/annotations/deploys", q

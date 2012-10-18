@@ -13,10 +13,10 @@ describe Backstop::Deploys::Web do
   let(:api_endpoint) { "https://#{CGI.escape(librato_email)}:#{librato_key}@metrics-api.librato.com/v1" }
   let(:app_name) { 'foo' }
   let(:version) { 'v75' }
+  let(:source) { 'test' }
   let(:t) { Time.now }
   let(:id) { "#{app_name}.#{version}.#{t.to_i}" }
-  let(:title) { "#{app_name}.#{version}" }
-  let(:source) { 'test' }
+  let(:title) { "#{source}.#{app_name}.#{version}" }
   let(:params) { {:source => source} }
 
   before(:each) do
