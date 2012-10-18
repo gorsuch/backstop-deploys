@@ -4,9 +4,9 @@ require File.expand_path('../lib/backstop-deploys/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Michael Gorsuch"]
   gem.email         = ["michael.gorsuch@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ''
+  gem.description   = %q{An extension to backstop to allow submission to Librato Metrics}
+  gem.summary       = gem.description
+  gem.homepage      = 'https://github.com/gorsuch/backstop-deploys'
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
