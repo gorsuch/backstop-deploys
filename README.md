@@ -18,9 +18,17 @@ Or install it yourself as:
 
 ## Usage
 
-Run `Backstop::Deploys::Web` in your rack application.
+This is generally meant to be coupled with your `backstop` Rack app, but doesn't necessarily have to be.  An example `config.ru`:
 
-Assumes the pressence of `LIBRATO_EMAIL` and `LIBRATO_KEY` in `ENV`.
+```
+$:.unshift File.dirname(__FILE__) + '/lib'
+require "backstop/web"
+require "backstop-deploys"
+
+run Rack::Cascade.new [Backstop::Application, Backstop::Deploys::Web]
+```
+
+It assumes the pressence of `LIBRATO_EMAIL` and `LIBRATO_KEY` in `ENV`.
 
 Example curl interaction:
 
