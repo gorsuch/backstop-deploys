@@ -4,7 +4,7 @@ module Backstop
       extend self
 
       def env!(key)
-        ENV(key) || raise("#{key} not found in ENV")
+        ENV[key] || raise("#{key} not found in ENV")
       end
 
       def librato_email
