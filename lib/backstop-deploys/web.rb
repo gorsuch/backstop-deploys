@@ -28,7 +28,7 @@ module Backstop
         data = nil
 
         begin
-          json = RestClient.get "#{api_endpoint}/annotations/deploys", :params => {'sources[0]' => source, :start_time => start_time}
+          json = RestClient.get "#{api_endpoint}/annotations/deploys?sources[]=#{source}&start_time=#{start_time}"
           data = JSON.parse(json)
         rescue RestClient::ResourceNotFound
           stream_exists = false
