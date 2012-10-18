@@ -43,9 +43,10 @@ module Backstop
           RestClient.put "#{api_endpoint}/annotations/deploys/#{event_id}", payload
         else
           # new event needs to be created
-          payload = { :start_time => start_time, :title => "#{app}.#{version}" }
+          payload = { :start_time => start_time, :title => "#{app}.#{version}", :source => source }
           payload[:end_time] = end_time if end_time
-          RestClient.post "#{api_endpoint}/annotations/deploys", "title=#{app}.#{version}&start_time=#{start_time}"
+          q = payload.map { |k,v| "#{k}=#{v}" }.sort.join("&")
+          RestClient.post "#{api_endpoint}/annotations/deploys", q
         end
       end
     end
